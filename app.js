@@ -119,9 +119,9 @@ const words=[
 {category:"Полезные глаголы",sr:"Zatvoriti",ru:"Закрыть",ex:"Zatvorite prozor, molim. — Закройте окно, пожалуйста."}
 ];
 const $=s=>document.querySelector(s);const view=$("#view");let saved=JSON.parse(localStorage.getItem("mojSaved")||"[]");let learned=Number(localStorage.getItem("mojLearned")||0);let quizIndex=0,quizScore=0,answered=false,installPrompt=null;
-const titles={home:"Твой сербский",words:"Карточки слов",grammar:"Грамматика",test:"Проверка знаний",chat:"Практика диалогов",saved:"Мои слова",practice:"Тренажёр ответов"};
+const titles={home:"Твой сербский",words:"Карточки слов",grammar:"Грамматика",test:"Проверка знаний",chat:"Практика диалогов",saved:"Мои слова",practice:"Тренажёр ответов",verbs:"Глаголы и спряжения"};
 function setTitle(name){$("#page-title").textContent=titles[name]||titles.home;document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===name))}
-function go(name){setTitle(name);({home:home,words:showWords,grammar:grammar,test:startTest,chat:chat,saved:showSaved,practice:practice}[name]||home)()}
+function go(name){setTitle(name);({home:home,words:showWords,grammar:grammar,test:startTest,chat:chat,saved:showSaved,practice:practice,verbs:verbs}[name]||home)()}
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));
 function home(){view.innerHTML=`<section class="hero"><div><span class="tag">TVOJ MALI KORAK</span><h2>Сербский становится ближе — шаг за шагом.</h2><p>Немного слов, немного практики и смелость говорить. Начнём с короткого занятия?</p><button class="primary" data-go="words">Начать занятие&nbsp; →</button></div><div class="hero-art">🌿</div></section><div class="stats"><div class="stat"><small>Выучено слов</small><strong>${learned}</strong><em>Продолжай в своём темпе</em></div><div class="stat"><small>Сохранено слов</small><strong>${saved.length}</strong><em>Твоя личная подборка</em></div><div class="stat"><small>Уроки</small><strong>1 / 12</strong><em>Первый шаг уже сделан</em></div></div><div class="section-head"><h2>Выбери занятие</h2><span class="muted">15–30 минут в день</span></div><div class="tiles"><div class="tile" data-go="words"><div class="tile-icon">🗂️</div><h3>Карточки слов</h3><p>Полезные слова и выражения на каждый день.</p></div><div class="tile" data-go="grammar"><div class="tile-icon">📖</div><h3>Грамматика</h3><p>Разберёмся с основами на простых примерах.</p></div><div class="tile" data-go="test"><div class="tile-icon">✍️</div><h3>Проверка знаний</h3><p>Проверь, что уже запомнилось.</p></div></div><div class="section-head"><h2>Твой прогресс</h2><span class="muted">Начало пути</span></div><div class="panel"><div style="display:flex;justify-content:space-between;font-size:13px"><b>Слова из первого набора</b><span>${Math.min(learned,words.length)} из ${words.length}</span></div><div class="progress-track"><div class="progress-fill" style="width:${Math.min(100,learned/words.length*100)}%"></div></div></div>`;view.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)))}
 function wordCard(w,i){const isSaved=saved.includes(w.sr);return `<article class="word-card"><span class="tag">СЛОВО ${String(i+1).padStart(2,"0")}</span><div class="serbian">${w.sr}</div><div class="translation">${w.ru}</div><div class="example">${w.ex}</div><div class="word-actions"><button class="icon-btn" data-speak="${i}">🔊 Слушать</button><button class="icon-btn" data-save="${i}">${isSaved?"♥ Сохранено":"♡ Сохранить"}</button><button class="icon-btn" data-known="${i}">✓ Знаю</button></div></article>`}
@@ -191,4 +191,32 @@ function renderSpeakingTask(){
   $("#check-speaking").disabled=true;
  };
  $("#next-speaking").onclick=()=>{speakingIndex++;if(speakingIndex>=speakingTasks.length){view.innerHTML=`<div class="panel quiz"><span class="tag">BRAVO!</span><h2>Ты ответила на все вопросы</h2><p class="page-intro">Прочитай ответы ещё раз вслух. Повтори это упражнение завтра — попробуй отвечать уже без подсказок.</p><button class="primary" id="repeat-speaking">Повторить тренировку</button></div>`;$("#repeat-speaking").onclick=practice}else renderSpeakingTask()};
+}
+
+function verbs(){
+ const data=[
+ {inf:"hteti",ru:"хотеть",forms:["hoću","hoćeš","hoće","hoćemo","hoćete","hoće"],ex:"Hoću kafu. — Я хочу кофе."},
+ {inf:"raditi",ru:"работать",forms:["radim","radiš","radi","radimo","radite","rade"],ex:"Radim od kuće. — Я работаю из дома."},
+ {inf:"živeti",ru:"жить",forms:["živim","živiš","živi","živimo","živite","žive"],ex:"Živim u Subotici. — Я живу в Суботице."},
+ {inf:"imati",ru:"иметь",forms:["imam","imaš","ima","imamo","imate","imaju"],ex:"Imam vremena. — У меня есть время."},
+ {inf:"govoriti",ru:"говорить",forms:["govorim","govoriš","govori","govorimo","govorite","govore"],ex:"Govorim malo srpski. — Я немного говорю по-сербски."},
+ {inf:"učiti",ru:"учить(ся)",forms:["učim","učiš","uči","učimo","učite","uče"],ex:"Učim srpski. — Я учу сербский."}
+ ];
+ const pron=["ja — я","ti — ты","on / ona — он / она","mi — мы","vi — вы","oni / one — они"];
+ view.innerHTML=`<p class="page-intro">В сербском окончание глагола меняется в зависимости от того, кто выполняет действие. Учим не только перевод, но и все формы сразу.</p>
+ <div class="verb-note"><b>Как читать таблицу</b><span>Местоимение + форма глагола. В обычной речи местоимение часто опускают: вместо «Ja radim» можно сказать просто «Radim».</span></div>
+ <div class="verb-grid">${data.map((v,i)=>`<article class="lesson-card verb-card"><div class="verb-heading"><div><span class="tag">ГЛАГОЛ ${String(i+1).padStart(2,"0")}</span><h3>${v.inf}</h3><p>${v.ru}</p></div><button class="icon-btn" data-verb-speak="${i}">🔊 Слушать</button></div><div class="verb-forms">${v.forms.map((f,j)=>`<div><span>${pron[j]}</span><b>${f}</b></div>`).join("")}</div><div class="example-box">${v.ex}</div></article>`).join("")}</div>
+ <article class="lesson-card verb-practice"><span class="tag">MALA VEŽBA</span><h3>Проверь себя</h3><p>Выбери правильную форму глагола.</p><div class="verb-question" id="verb-question"></div><div class="answers" id="verb-options"></div><div class="feedback" id="verb-feedback"></div><button class="primary" id="verb-next">Следующий вопрос →</button></article>`;
+ view.querySelectorAll("[data-verb-speak]").forEach(b=>b.onclick=()=>{const v=data[+b.dataset.verbSpeak];speak(v.forms.join(", "))});
+ const qs=[
+ {q:"Ja ___ od kuće. (raditi)",opts:["radiš","radim","rade"],c:1,why:"Ja radim — я работаю."},
+ {q:"Ti ___ u Subotici. (živeti)",opts:["živim","živi","živiš"],c:2,why:"Ti živiš — ты живёшь."},
+ {q:"Ona ___ kafu. (hteti)",opts:["hoće","hoću","hoćemo"],c:0,why:"Ona hoće — она хочет."},
+ {q:"Mi ___ srpski. (učiti)",opts:["učite","učimo","uče"],c:1,why:"Mi učimo — мы учим."},
+ {q:"Oni ___ vremena. (imati)",opts:["imaju","imaš","imam"],c:0,why:"Oni imaju — у них есть."},
+ {q:"Vi ___ ruski. (govoriti)",opts:["govore","govorim","govorite"],c:2,why:"Vi govorite — вы говорите."}
+ ];
+ let qi=0,locked=false;
+ const draw=()=>{const q=qs[qi];locked=false;$("#verb-question").textContent=q.q;$("#verb-feedback").textContent="";$("#verb-options").innerHTML=q.opts.map((x,i)=>`<button class="answer" data-vopt="${i}">${x}</button>`).join("");view.querySelectorAll("[data-vopt]").forEach(b=>b.onclick=()=>{if(locked)return;locked=true;const n=+b.dataset.vopt;view.querySelectorAll("[data-vopt]").forEach((x,i)=>{x.disabled=true;if(i===q.c)x.classList.add("correct");else if(i===n)x.classList.add("wrong")});$("#verb-feedback").textContent=(n===q.c?"Верно! ":"Попробуй запомнить: ")+q.why})};
+ $("#verb-next").onclick=()=>{qi=(qi+1)%qs.length;draw()};draw();
 }
