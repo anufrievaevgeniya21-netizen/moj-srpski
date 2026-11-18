@@ -13,9 +13,9 @@ const words=[
 {sr:"Ne razumem",ru:"Я не понимаю",ex:"Izvinite, ne razumem. — Извините, я не понимаю."}
 ];
 const $=s=>document.querySelector(s);const view=$("#view");let saved=JSON.parse(localStorage.getItem("mojSaved")||"[]");let learned=Number(localStorage.getItem("mojLearned")||0);let quizIndex=0,quizScore=0,answered=false,installPrompt=null;
-const titles={home:"Твой сербский",words:"Карточки слов",grammar:"Грамматика",test:"Проверка знаний",chat:"Практика диалогов",saved:"Мои слова"};
+const titles={home:"Твой сербский",words:"Карточки слов",grammar:"Грамматика",test:"Проверка знаний",chat:"Практика диалогов",saved:"Мои слова",practice:"Тренажёр ответов"};
 function setTitle(name){$("#page-title").textContent=titles[name]||titles.home;document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===name))}
-function go(name){setTitle(name);({home:home,words:showWords,grammar:grammar,test:startTest,chat:chat,saved:showSaved}[name]||home)()}
+function go(name){setTitle(name);({home:home,words:showWords,grammar:grammar,test:startTest,chat:chat,saved:showSaved,practice:practice}[name]||home)()}
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));
 function home(){view.innerHTML=`<section class="hero"><div><span class="tag">TVOJ MALI KORAK</span><h2>Сербский становится ближе — шаг за шагом.</h2><p>Немного слов, немного практики и смелость говорить. Начнём с короткого занятия?</p><button class="primary" data-go="words">Начать занятие&nbsp; →</button></div><div class="hero-art">🌿</div></section><div class="stats"><div class="stat"><small>Выучено слов</small><strong>${learned}</strong><em>Продолжай в своём темпе</em></div><div class="stat"><small>Сохранено слов</small><strong>${saved.length}</strong><em>Твоя личная подборка</em></div><div class="stat"><small>Уроки</small><strong>1 / 12</strong><em>Первый шаг уже сделан</em></div></div><div class="section-head"><h2>Выбери занятие</h2><span class="muted">15–30 минут в день</span></div><div class="tiles"><div class="tile" data-go="words"><div class="tile-icon">🗂️</div><h3>Карточки слов</h3><p>Полезные слова и выражения на каждый день.</p></div><div class="tile" data-go="grammar"><div class="tile-icon">📖</div><h3>Грамматика</h3><p>Разберёмся с основами на простых примерах.</p></div><div class="tile" data-go="test"><div class="tile-icon">✍️</div><h3>Проверка знаний</h3><p>Проверь, что уже запомнилось.</p></div></div><div class="section-head"><h2>Твой прогресс</h2><span class="muted">Начало пути</span></div><div class="panel"><div style="display:flex;justify-content:space-between;font-size:13px"><b>Слова из первого набора</b><span>${Math.min(learned,words.length)} из ${words.length}</span></div><div class="progress-track"><div class="progress-fill" style="width:${Math.min(100,learned/words.length*100)}%"></div></div></div>`;view.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)))}
 function wordCard(w,i){const isSaved=saved.includes(w.sr);return `<article class="word-card"><span class="tag">СЛОВО ${String(i+1).padStart(2,"0")}</span><div class="serbian">${w.sr}</div><div class="translation">${w.ru}</div><div class="example">${w.ex}</div><div class="word-actions"><button class="icon-btn" data-speak="${i}">🔊 Слушать</button><button class="icon-btn" data-save="${i}">${isSaved?"♥ Сохранено":"♡ Сохранить"}</button><button class="icon-btn" data-known="${i}">✓ Знаю</button></div></article>`}
@@ -33,3 +33,46 @@ function speak(text){if(!("speechSynthesis"in window)){alert("Озвучиван
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e;$("#install-btn").hidden=false});$("#install-btn").onclick=async()=>{if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;$("#install-btn").hidden=true};
 if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 home();
+
+// Тренажёр самостоятельных ответов: короткие вопросы уровня A1
+const speakingTasks=[
+{q:"Kako se zoveš?",ru:"Как тебя зовут?",hint:"Начни с: Zovem se…",answer:"Zovem se Ana.",keys:["zovem se"],tip:"После Zovem se назови своё имя."},
+{q:"Odakle si?",ru:"Откуда ты?",hint:"Используй: Ja sam iz…",answer:"Ja sam iz Rusije.",keys:["iz"],tip:"Страна после iz: Ja sam iz Rusije."},
+{q:"Gde živiš?",ru:"Где ты живёшь?",hint:"Начни с: Živim u…",answer:"Živim u Subotici.",keys:["živim","u"],tip:"Для города скажи Živim u…"},
+{q:"Šta radiš?",ru:"Чем занимаешься?",hint:"Можно ответить: Učim srpski. / Radim.",answer:"Učim srpski.",keys:["učim","srpski"],tip:"Učim srpski — Я учу сербский."},
+{q:"Kako si danas?",ru:"Как ты сегодня?",hint:"Например: Dobro sam, hvala.",answer:"Dobro sam, hvala.",keys:["dobro"],tip:"Dobro sam — У меня всё хорошо."},
+{q:"Da li govoriš srpski?",ru:"Ты говоришь по-сербски?",hint:"Если пока немного: Govorim malo srpski.",answer:"Govorim malo srpski.",keys:["malo","srpski"],tip:"Malo значит «немного». Это полезный ответ для начинающего."}
+];
+let speakingIndex=0;
+function practice(){
+ speakingIndex=0;
+ renderSpeakingTask();
+}
+function renderSpeakingTask(){
+ const t=speakingTasks[speakingIndex];
+ view.innerHTML=`<p class="page-intro">Отвечай самостоятельно, целым предложением. Не бойся ошибок: сначала попробуй вспомнить фразу, затем при необходимости открой подсказку.</p>
+ <section class="panel speaking-panel">
+  <div class="speaking-top"><span class="tag">GOVORNA VEŽBA · A1</span><span class="muted">Вопрос ${speakingIndex+1} из ${speakingTasks.length}</span></div>
+  <div class="progress-track"><div class="progress-fill" style="width:${(speakingIndex+1)/speakingTasks.length*100}%"></div></div>
+  <h2 class="speaking-question">${t.q}</h2><p class="speaking-translation">${t.ru}</p>
+  <label class="answer-label" for="speaking-answer">Твой ответ на сербском</label>
+  <textarea id="speaking-answer" rows="2" placeholder="Napiši svoj odgovor…"></textarea>
+  <div class="speaking-actions"><button class="secondary" id="show-hint">Показать подсказку</button><button class="primary" id="check-speaking">Проверить ответ</button></div>
+  <div id="speaking-hint" class="speaking-hint" hidden></div>
+  <div id="speaking-feedback" class="speaking-feedback" aria-live="polite"></div>
+  <button class="primary" id="next-speaking" hidden>${speakingIndex===speakingTasks.length-1?"Завершить":"Следующий вопрос →"}</button>
+ </section>`;
+ const input=$("#speaking-answer");
+ $("#show-hint").onclick=()=>{const h=$("#speaking-hint");h.hidden=false;h.textContent=t.hint};
+ $("#check-speaking").onclick=()=>{
+  const value=input.value.trim().toLocaleLowerCase();
+  const feedback=$("#speaking-feedback");
+  if(!value){feedback.textContent="Сначала напиши свой вариант — даже если не уверена.";return}
+  const normalized=value.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  const ok=t.keys.every(k=>normalized.includes(k.normalize("NFD").replace(/[\u0300-\u036f]/g,"")));
+  feedback.innerHTML=`<div class="feedback-title">${ok?"Dobro! Хорошая попытка.":"Хорошая попытка — сравни со стандартным вариантом."}</div><p>${t.tip}</p><div class="model-answer"><small>Вариант ответа</small><b>${t.answer}</b></div>`;
+  $("#next-speaking").hidden=false;
+  $("#check-speaking").disabled=true;
+ };
+ $("#next-speaking").onclick=()=>{speakingIndex++;if(speakingIndex>=speakingTasks.length){view.innerHTML=`<div class="panel quiz"><span class="tag">BRAVO!</span><h2>Ты ответила на все вопросы</h2><p class="page-intro">Прочитай ответы ещё раз вслух. Повтори это упражнение завтра — попробуй отвечать уже без подсказок.</p><button class="primary" id="repeat-speaking">Повторить тренировку</button></div>`;$("#repeat-speaking").onclick=practice}else renderSpeakingTask()};
+}
