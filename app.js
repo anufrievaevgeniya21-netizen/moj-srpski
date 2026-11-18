@@ -119,9 +119,9 @@ const words=[
 {category:"Полезные глаголы",sr:"Zatvoriti",ru:"Закрыть",ex:"Zatvorite prozor, molim. — Закройте окно, пожалуйста."}
 ];
 const $=s=>document.querySelector(s);const view=$("#view");let saved=JSON.parse(localStorage.getItem("mojSaved")||"[]");let learned=Number(localStorage.getItem("mojLearned")||0);let quizIndex=0,quizScore=0,answered=false,installPrompt=null;
-const titles={home:"Твой сербский",words:"Карточки слов",grammar:"Грамматика",test:"Проверка знаний",saved:"Мои слова",practice:"Тренажёр ответов",verbs:"Глаголы и спряжения"};
+const titles={home:"Твой сербский",words:"Карточки слов",grammar:"Грамматика",test:"Проверка знаний",saved:"Мои слова",practice:"Тренажёр ответов",exercises:"Упражнения",verbs:"Глаголы и спряжения"};
 function setTitle(name){$("#page-title").textContent=titles[name]||titles.home;document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===name))}
-function go(name){setTitle(name);({home:home,words:showWords,grammar:grammar,test:startTest,saved:showSaved,practice:practice,verbs:verbs}[name]||home)()}
+function go(name){setTitle(name);({home:home,words:showWords,grammar:grammar,test:startTest,saved:showSaved,practice:practice,exercises:exercises,verbs:verbs}[name]||home)()}
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));
 function home(){view.innerHTML=`<section class="hero"><div><span class="tag">TVOJ MALI KORAK</span><h2>Сербский становится ближе — шаг за шагом.</h2><p>Немного слов, немного практики и смелость говорить. Начнём с короткого занятия?</p><button class="primary" data-go="words">Начать занятие&nbsp; →</button></div><div class="hero-art">🌿</div></section><div class="stats"><div class="stat"><small>Выучено слов</small><strong>${learned}</strong><em>Продолжай в своём темпе</em></div><div class="stat"><small>Сохранено слов</small><strong>${saved.length}</strong><em>Твоя личная подборка</em></div><div class="stat"><small>Уроки</small><strong>1 / 12</strong><em>Первый шаг уже сделан</em></div></div><div class="section-head"><h2>Выбери занятие</h2><span class="muted">15–30 минут в день</span></div><div class="tiles"><div class="tile" data-go="words"><div class="tile-icon">🗂️</div><h3>Карточки слов</h3><p>Полезные слова и выражения на каждый день.</p></div><div class="tile" data-go="grammar"><div class="tile-icon">📖</div><h3>Грамматика</h3><p>Разберёмся с основами на простых примерах.</p></div><div class="tile" data-go="test"><div class="tile-icon">✍️</div><h3>Проверка знаний</h3><p>Проверь, что уже запомнилось.</p></div></div><div class="section-head"><h2>Твой прогресс</h2><span class="muted">Начало пути</span></div><div class="panel"><div style="display:flex;justify-content:space-between;font-size:13px"><b>Слова из первого набора</b><span>${Math.min(learned,words.length)} из ${words.length}</span></div><div class="progress-track"><div class="progress-fill" style="width:${Math.min(100,learned/words.length*100)}%"></div></div></div>`;view.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)))}
 function wordCard(w,i){const isSaved=saved.includes(w.sr);return `<article class="word-card"><span class="tag">СЛОВО ${String(i+1).padStart(2,"0")}</span><div class="serbian">${w.sr}</div><div class="translation">${w.ru}</div><div class="example">${w.ex}</div><div class="word-actions"><button class="icon-btn" data-speak="${i}">🔊 Слушать</button><button class="icon-btn" data-save="${i}">${isSaved?"♥ Сохранено":"♡ Сохранить"}</button><button class="icon-btn" data-known="${i}">✓ Знаю</button></div></article>`}
@@ -216,4 +216,63 @@ function verbs(){
  let qi=0,locked=false;
  const draw=()=>{const q=qs[qi];locked=false;$("#verb-question").textContent=q.q;$("#verb-feedback").textContent="";$("#verb-options").innerHTML=q.opts.map((x,i)=>`<button class="answer" data-vopt="${i}">${x}</button>`).join("");view.querySelectorAll("[data-vopt]").forEach(b=>b.onclick=()=>{if(locked)return;locked=true;const n=+b.dataset.vopt;view.querySelectorAll("[data-vopt]").forEach((x,i)=>{x.disabled=true;if(i===q.c)x.classList.add("correct");else if(i===n)x.classList.add("wrong")});$("#verb-feedback").textContent=(n===q.c?"Верно! ":"Попробуй запомнить: ")+q.why})};
  $("#verb-next").onclick=()=>{qi=(qi+1)%qs.length;draw()};draw();
+}
+
+
+const exerciseSets={
+ translate:[
+ {q:"Как сказать «Я живу в Суботице»?",a:["Živim u Subotici.","Živiš u Subotici.","Živim iz Subotice."],c:0,why:"Živim u Subotici — я живу в Суботице."},
+ {q:"Как сказать «Мне нужна вода»?",a:["Želim vodu.","Treba mi voda.","Imam vodu."],c:1,why:"Treba mi… — мне нужно / нужна…"},
+ {q:"Как сказать «Я не понимаю»?",a:["Ne znam.","Ne razumem.","Ne govorim."],c:1,why:"Ne razumem — я не понимаю."},
+ {q:"Как сказать «Ещё один кофе, пожалуйста»?",a:["Još jednu kafu, molim.","Jednu vodu, molim.","Kafa je dobra."],c:0,why:"Još jednu kafu, molim — ещё один кофе, пожалуйста."},
+ {q:"Как сказать «Мой муж работает из дома»?",a:["Moj muž radi od kuće.","Moj muž živi kuću.","Moj muž radi u kući."],c:0,why:"Radi od kuće — работает из дома."},
+ {q:"Как сказать «Я учу сербский»?",a:["Govorim srpski.","Učim srpski.","Znam srpski."],c:1,why:"Učim srpski — я учу сербский."}
+ ],
+ grammar:[
+ {q:"Ja ___ iz Rusije. (biti)",a:["si","sam","je"],c:1,why:"С ja используется sam."},
+ {q:"Ti ___ u Subotici. (živeti)",a:["živim","živiš","žive"],c:1,why:"Ti živiš — ты живёшь."},
+ {q:"Ona ___ kafu. (hteti)",a:["hoće","hoću","hoćemo"],c:0,why:"Ona hoće — она хочет."},
+ {q:"Mi ___ srpski. (učiti)",a:["učite","učimo","uče"],c:1,why:"Mi učimo — мы учим."},
+ {q:"Oni ___ vremena. (imati)",a:["imam","imaš","imaju"],c:2,why:"Oni imaju — у них есть."},
+ {q:"Vi ___ ruski. (govoriti)",a:["govorite","govori","govorim"],c:0,why:"Vi govorite — вы говорите."}
+ ],
+ vocabulary:[
+ {q:"Что значит «ponekad»?",a:["Всегда","Иногда","Никогда"],c:1,why:"Ponekad — иногда."},
+ {q:"Что значит «komšinica»?",a:["Соседка","Подруга","Мать"],c:0,why:"Komšinica — соседка."},
+ {q:"Что значит «račun»?",a:["Деньги","Пакет","Счёт / чек"],c:2,why:"Račun — счёт или чек."},
+ {q:"Что значит «kupatilo»?",a:["Кухня","Ванная комната","Комната"],c:1,why:"Kupatilo — ванная комната."},
+ {q:"Что значит «sutra»?",a:["Вчера","Сегодня","Завтра"],c:2,why:"Sutra — завтра."},
+ {q:"Что значит «polako»?",a:["Быстро","Медленно / не спеша","Громко"],c:1,why:"Polako — медленно, не спеша."}
+ ]
+};
+let exerciseMode="translate",exerciseIndex=0,exerciseScore=0,exerciseLocked=false,exerciseQuestions=[];
+function exercises(){
+ view.innerHTML=`<p class="page-intro">Выбирай тип задания. Упражнения помогают не только узнавать слова, но и использовать их в предложениях.</p>
+ <div class="exercise-modes">
+ <button class="exercise-mode" data-mode="translate"><b>🇷🇸 Перевод</b><span>Выбери сербскую фразу по русскому значению</span></button>
+ <button class="exercise-mode" data-mode="grammar"><b>🧩 Грамматика</b><span>Подставь правильную форму глагола</span></button>
+ <button class="exercise-mode" data-mode="vocabulary"><b>📚 Словарный запас</b><span>Проверь значение новых слов</span></button>
+ </div><div class="panel exercise-intro"><span class="tag">VEŽBANJE SVAKOG DANA</span><h2>Практика маленькими шагами</h2><p>В каждом раунде 6 вопросов. После ответа ты увидишь объяснение и правильный вариант.</p></div>`;
+ view.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>startExercise(b.dataset.mode));
+}
+function startExercise(mode){
+ exerciseMode=mode;exerciseIndex=0;exerciseScore=0;exerciseLocked=false;
+ exerciseQuestions=[...exerciseSets[mode]].sort(()=>Math.random()-.5);
+ renderExercise();
+}
+function renderExercise(){
+ if(exerciseIndex>=exerciseQuestions.length){
+  view.innerHTML=`<div class="panel quiz"><span class="tag">BRAVO!</span><h2>Раунд завершён</h2><div class="exercise-score">${exerciseScore} / ${exerciseQuestions.length}</div><p class="page-intro">Правильных ответов: ${exerciseScore} из ${exerciseQuestions.length}. Ошибки — это часть обучения, повтори раунд, чтобы закрепить материал.</p><button class="primary" id="exercise-again">Повторить раунд</button> <button class="secondary" id="exercise-back">К упражнениям</button></div>`;
+  $("#exercise-again").onclick=()=>startExercise(exerciseMode);$("#exercise-back").onclick=exercises;return;
+ }
+ const q=exerciseQuestions[exerciseIndex];exerciseLocked=false;
+ view.innerHTML=`<div class="panel quiz exercise-card"><div class="exercise-top"><span class="tag">${exerciseMode==="translate"?"PREVOD · ПЕРЕВОД":exerciseMode==="grammar"?"GRAMATIKA · ГРАММАТИКА":"REČNIK · СЛОВА"}</span><span class="muted">${exerciseIndex+1} / ${exerciseQuestions.length}</span></div><div class="progress-track"><div class="progress-fill" style="width:${(exerciseIndex+1)/exerciseQuestions.length*100}%"></div></div><div class="question">${q.q}</div><div class="answers">${q.a.map((x,i)=>`<button class="answer" data-ex-answer="${i}">${x}</button>`).join("")}</div><div class="feedback" id="exercise-feedback"></div><button class="primary" id="exercise-next" disabled>${exerciseIndex===exerciseQuestions.length-1?"Результат":"Следующий вопрос →"}</button></div>`;
+ view.querySelectorAll("[data-ex-answer]").forEach(b=>b.onclick=()=>{
+  if(exerciseLocked)return;exerciseLocked=true;const chosen=+b.dataset.exAnswer;
+  view.querySelectorAll("[data-ex-answer]").forEach((x,i)=>{x.disabled=true;if(i===q.c)x.classList.add("correct");else if(i===chosen)x.classList.add("wrong")});
+  if(chosen===q.c)exerciseScore++;
+  $("#exercise-feedback").textContent=(chosen===q.c?"Верно! ":"Запомни: ")+q.why;
+  $("#exercise-next").disabled=false;
+ });
+ $("#exercise-next").onclick=()=>{exerciseIndex++;renderExercise()};
 }
