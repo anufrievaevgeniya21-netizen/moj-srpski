@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f7f5ef">
+  <meta name="description" content="Учи сербский каждый день — Moj Srpski">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <title>Moj Srpski — учим сербский</title>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" data-view="home"><span class="brand-mark">м</span><span><b>Moj Srpski</b><small>твой сербский каждый день</small></span></a>
+      <nav class="nav">
+        <button class="nav-item active" data-view="home"><span>⌂</span>Главная</button>
+        <button class="nav-item" data-view="words"><span>▤</span>Карточки слов</button>
+        <button class="nav-item" data-view="grammar"><span>文</span>Грамматика</button>
+        <button class="nav-item" data-view="test"><span>✓</span>Проверка знаний</button>
+        <button class="nav-item" data-view="chat"><span>☏</span>Диалоги</button>
+        <button class="nav-item" data-view="saved"><span>♡</span>Мои слова</button>
+      </nav>
+      <div class="sidebar-note"><span class="note-icon">☀</span><b>Полчаса в день</b><p>Небольшие занятия каждый день помогут заговорить увереннее.</p></div>
+      <div class="sidebar-bottom">Учим сербский с удовольствием <span>♥</span></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div><span class="eyebrow">DOBRO DOŠLA!</span><h1 id="page-title">Твой сербский</h1></div><div class="top-actions"><span class="streak">✦ <b id="streak">1</b> день занятий</span><button class="install-btn" id="install-btn" hidden>Установить приложение</button></div></header>
+      <div id="view" class="view"></div>
+      <footer>Polako, ali sigurno — постепенно, но уверенно. <span>♥</span></footer>
+    </main>
+  </div>
+  <script src="./app.js"></script>
+</body>
+</html>
