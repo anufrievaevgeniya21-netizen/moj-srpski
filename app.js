@@ -243,6 +243,67 @@ const exerciseSets={
  {q:"Что значит «kupatilo»?",a:["Кухня","Ванная комната","Комната"],c:1,why:"Kupatilo — ванная комната."},
  {q:"Что значит «sutra»?",a:["Вчера","Сегодня","Завтра"],c:2,why:"Sutra — завтра."},
  {q:"Что значит «polako»?",a:["Быстро","Медленно / не спеша","Громко"],c:1,why:"Polako — медленно, не спеша."}
+ ],
+
+ translate:[
+ {q:"Как сказать «Я хочу купить хлеб»?",a:["Želim da kupim hleb.","Želim da jedem hleb.","Kupujem od hleba."],c:0,why:"Želim da kupim hleb — я хочу купить хлеб."},
+ {q:"Как сказать «Где находится аптека?»",a:["Kada je apoteka?","Gde je apoteka?","Ko je apoteka?"],c:1,why:"Gde je…? — Где находится…?"},
+ {q:"Как сказать «Я немного говорю по-сербски»?",a:["Govorim mnogo srpski.","Govorim malo srpski.","Ne govorim ruski."],c:1,why:"Malo — немного."},
+ {q:"Как сказать «Сегодня я дома»?",a:["Danas sam kod kuće.","Sutra sam kući.","Danas imam kuću."],c:0,why:"Danas sam kod kuće — сегодня я дома."},
+ {q:"Как сказать «Мне нужно идти»?",a:["Mogu da idem.","Moram da idem.","Želim da dođem."],c:1,why:"Moram da idem — я должен / должна идти."},
+ {q:"Как сказать «Повторите, пожалуйста»?",a:["Govorite brzo, molim.","Ponovite, molim.","Čekajte kod kuće."],c:1,why:"Ponovite, molim — повторите, пожалуйста."},
+ {q:"Как сказать «Я не знаю»?",a:["Ne znam.","Ne mogu.","Ne želim."],c:0,why:"Ne znam — я не знаю."},
+ {q:"Как сказать «Сколько стоит это?»",a:["Koliko je sati?","Koliko košta ovo?","Gde je ovo?"],c:1,why:"Koliko košta ovo? — Сколько это стоит?"},
+ {q:"Как сказать «Я пью кофе утром»?",a:["Ujutru pijem kafu.","Uveče jedem kafu.","Danas kuvam kafu."],c:0,why:"Ujutru — утром; pijem — пью."},
+ {q:"Как сказать «Магазин рядом»?",a:["Prodavnica je daleko.","Prodavnica je blizu.","Prodavnica je zatvorena."],c:1,why:"Blizu — близко, рядом."},
+ {q:"Как сказать «Я жду автобус»?",a:["Čekam autobus.","Tražim autobusku kartu.","Vozim autobus."],c:0,why:"Čekam — я жду."},
+ {q:"Как сказать «Мы учим сербский»?",a:["Oni uče srpski.","Mi učimo srpski.","Vi učite srpski."],c:1,why:"Mi učimo — мы учим."},
+ {q:"Как сказать «Завтра я работаю»?",a:["Juče radim.","Sada sam radila.","Sutra radim."],c:2,why:"Sutra — завтра; radim — работаю."},
+ {q:"Как сказать «Мне нужна помощь»?",a:["Treba mi pomoć.","Imam pomoć.","Pomažem mi."],c:0,why:"Treba mi pomoć — мне нужна помощь."},
+ {q:"Как сказать «Я люблю гулять»?",a:["Volim da šetam.","Volim da spavam.","Želim da čekam."],c:0,why:"Volim da šetam — я люблю гулять."},
+ {q:"Как сказать «Извините, где остановка?»",a:["Izvinite, gde je stanica?","Hvala, kada je stanica?","Molim, ko je stanica?"],c:0,why:"Izvinite, gde je stanica? — Извините, где остановка?"},
+ {q:"Как сказать «Я живу в квартире»?",a:["Radim u stanu.","Živim u stanu.","Idem iz stana."],c:1,why:"Živim u stanu — я живу в квартире."},
+ {q:"Как сказать «Не понимаю вопрос»?",a:["Ne razumem pitanje.","Ne znam pitanje.","Ne govorim pitanje."],c:0,why:"Ne razumem pitanje — я не понимаю вопрос."}
+ ],
+ grammar:[
+ {q:"Ja ___ kafu. (piti)",a:["piješ","pijem","piju"],c:1,why:"Ja pijem — я пью."},
+ {q:"Ti ___ u prodavnicu. (ići)",a:["idem","ideš","ide"],c:1,why:"Ti ideš — ты идёшь."},
+ {q:"On ___ srpski. (učiti)",a:["učim","učite","uči"],c:2,why:"On uči — он учит."},
+ {q:"Mi ___ vremena. (imati)",a:["imamo","imate","imaju"],c:0,why:"Mi imamo — у нас есть."},
+ {q:"Ja ___ da pomognem. (moći)",a:["možeš","mogu","može"],c:1,why:"Ja mogu — я могу."},
+ {q:"Vi ___ ovde. (raditi)",a:["radim","radi","radite"],c:2,why:"Vi radite — вы работаете."},
+ {q:"One ___ kafu. (želeti)",a:["žele","želim","želiš"],c:0,why:"One žele — они (жен.) хотят."},
+ {q:"Ti ___ odgovor. (znati)",a:["znam","znaš","zna"],c:1,why:"Ti znaš — ты знаешь."},
+ {q:"Ona ___ u Subotici. (živeti)",a:["živim","živiš","živi"],c:2,why:"Ona živi — она живёт."},
+ {q:"Mi ___ kod kuće. (biti)",a:["sam","smo","su"],c:1,why:"Mi smo — мы есть / мы находимся."},
+ {q:"Ja ___ hleb. (jesti)",a:["jedem","jedeš","jedu"],c:0,why:"Ja jedem — я ем."},
+ {q:"Deca ___ u školi. (biti)",a:["je","su","smo"],c:1,why:"Deca su — дети находятся."},
+ {q:"On ___ autobus. (čekati)",a:["čekam","čekaš","čeka"],c:2,why:"On čeka — он ждёт."},
+ {q:"Vi ___ ruski? (govoriti)",a:["govorim","govore","govorite"],c:2,why:"Vi govorite — вы говорите."},
+ {q:"Ja ___ da spavam. (želeti)",a:["želim","želiš","žele"],c:0,why:"Ja želim — я хочу."},
+ {q:"Oni ___ u pekari. (raditi)",a:["radi","radimo","rade"],c:2,why:"Oni rade — они работают."},
+ {q:"Ti ___ vodu. (piti)",a:["pijem","piješ","pije"],c:1,why:"Ti piješ — ты пьёшь."},
+ {q:"Mi ___ u park. (ići)",a:["idemo","idu","ideš"],c:0,why:"Mi idemo — мы идём."}
+ ],
+ vocabulary:[
+ {q:"Что значит «odmah»?",a:["Сразу","Позже","Вчера"],c:0,why:"Odmah — сразу, немедленно."},
+ {q:"Что значит «blizu»?",a:["Далеко","Близко","Слева"],c:1,why:"Blizu — близко."},
+ {q:"Что значит «daleko»?",a:["Рядом","Далеко","Напротив"],c:1,why:"Daleko — далеко."},
+ {q:"Что значит «pomoć»?",a:["Помощь","Покупка","Вопрос"],c:0,why:"Pomoć — помощь."},
+ {q:"Что значит «pitanje»?",a:["Ответ","Вопрос","Задание"],c:1,why:"Pitanje — вопрос."},
+ {q:"Что значит «odgovor»?",a:["Ответ","Остановка","Адрес"],c:0,why:"Odgovor — ответ."},
+ {q:"Что значит «stanica»?",a:["Станция / остановка","Квартира","Улица"],c:0,why:"Stanica — станция или остановка."},
+ {q:"Что значит «šetati»?",a:["Работать","Гулять","Покупать"],c:1,why:"Šetati — гулять, прогуливаться."},
+ {q:"Что значит «čekati»?",a:["Ждать","Идти","Знать"],c:0,why:"Čekati — ждать."},
+ {q:"Что значит «morati»?",a:["Хотеть","Мочь","Быть должным"],c:2,why:"Morati — быть должным, быть вынужденным."},
+ {q:"Что значит «možda»?",a:["Конечно","Может быть","Никогда"],c:1,why:"Možda — может быть."},
+ {q:"Что значит «uvek»?",a:["Иногда","Всегда","Редко"],c:1,why:"Uvek — всегда."},
+ {q:"Что значит «nikad»?",a:["Никогда","Сейчас","Часто"],c:0,why:"Nikad — никогда."},
+ {q:"Что значит «porodica»?",a:["Работа","Семья","Соседи"],c:1,why:"Porodica — семья."},
+ {q:"Что значит «račun»?",a:["Счёт / чек","Ключ","Книга"],c:0,why:"Račun — счёт или чек."},
+ {q:"Что значит «ključ»?",a:["Окно","Ключ","Дверь"],c:1,why:"Ključ — ключ."},
+ {q:"Что значит «voće»?",a:["Овощи","Фрукты","Мясо"],c:1,why:"Voće — фрукты."},
+ {q:"Что значит «povrće»?",a:["Овощи","Фрукты","Молоко"],c:0,why:"Povrće — овощи."}
  ]
 };
 let exerciseMode="translate",exerciseIndex=0,exerciseScore=0,exerciseLocked=false,exerciseQuestions=[];
@@ -252,7 +313,7 @@ function exercises(){
  <button class="exercise-mode" data-mode="translate"><b>🇷🇸 Перевод</b><span>Выбери сербскую фразу по русскому значению</span></button>
  <button class="exercise-mode" data-mode="grammar"><b>🧩 Грамматика</b><span>Подставь правильную форму глагола</span></button>
  <button class="exercise-mode" data-mode="vocabulary"><b>📚 Словарный запас</b><span>Проверь значение новых слов</span></button>
- </div><div class="panel exercise-intro"><span class="tag">VEŽBANJE SVAKOG DANA</span><h2>Практика маленькими шагами</h2><p>В каждом раунде 6 вопросов. После ответа ты увидишь объяснение и правильный вариант.</p></div>`;
+ </div><div class="panel exercise-intro"><span class="tag">VEŽBANJE SVAKOG DANA</span><h2>Практика маленькими шагами</h2><p>В каждом раунде 24 вопроса. Вопросы перемешиваются, поэтому при повторении порядок будет другим. После ответа ты увидишь объяснение и правильный вариант.</p></div>`;
  view.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>startExercise(b.dataset.mode));
 }
 function startExercise(mode){
